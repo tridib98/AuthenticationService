@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"/><title>Home</title></head>
+<body>
+  <h2>Home</h2>
+  <div id="user"></div>
+  <button onclick="callPublic()">Public</button>
+  <button onclick="callViewer()">Viewer</button>
+  <button onclick="callRegulatory()">Regulatory</button>
+  <button onclick="callAdmin()">Admin</button>
+  <pre id="out"></pre>
+
+  <script>
+    const token = localStorage.getItem('jwtToken');
+    const username = localStorage.getItem('username') || 'anonymous';
+    document.getElementById('user').innerText = 'User: ' + username;
+
+    async function call(path) {
+      const headers = {'Content-Type': 'application/json'};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      const res = await fetch(path, {headers});
+      const text = await res.text();
+      document.getElementById('out').innerText = `STATUS: ${res.status}\n\n` + text;
+    }
+
+    function callPublic(){ call('/api/home/public'); }
+    function callViewer(){ call('/api/home/viewer'); }
+    function callRegulatory(){ call('/api/home/regulatory'); }
+    function callAdmin(){ call('/api/home/admin'); }
+  </script>
+</body>
+</html>
